@@ -1,6 +1,5 @@
 package com.feicui.gaonews.utils;
 
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -27,12 +26,10 @@ import java.util.List;
 public class HttpCilentGetOrPost {
     private static HttpClient mHttpClient;
 
-    private static int Timeout = 5000;
-    private static int MaxTotalConnection = 8;
+    private static int Timeout = 5000;//超时时间
+    private static int MaxTotalConnection = 8;//最大连接数
 
     public static synchronized HttpClient getHttpClient() {
-
-
         if (mHttpClient == null) {
             //参数对象
             HttpParams params = new BasicHttpParams();
@@ -42,12 +39,14 @@ public class HttpCilentGetOrPost {
             ConnManagerParams.setMaxTotalConnections(params, MaxTotalConnection);
             //连接超时，定义通过网络与服务器建立连接的超时时间
             HttpConnectionParams.setConnectionTimeout(params, Timeout);
-            mHttpClient = new DefaultHttpClient();
+            mHttpClient = new DefaultHttpClient(params);
         }
         return mHttpClient;
     }
 
-
+    /*
+    * GET请求
+    * */
     public static String HttpGet(String url) {
 
 
@@ -64,6 +63,9 @@ public class HttpCilentGetOrPost {
         }
     }
 
+    /*
+    * POST请求
+    * */
     public static String HttpPost(String url, String key, String value) {
         try {
             HttpClient httpClient = getHttpClient();

@@ -2,7 +2,8 @@ package com.feicui.gaonews.biz;
 
 import android.content.Context;
 
-import com.feicui.gaonews.bean.News;
+import com.feicui.gaonews.bean.NewsInfo;
+import com.feicui.gaonews.utils.NewsDBManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,14 +20,18 @@ public class ParserNews {
     public ParserNews() {
     }
 
+    //构造函数
     public ParserNews(Context context) {
 
         this.context = context;
     }
 
-    public ArrayList<News> parser(String dataStr) {
+    /*
+    * 解析数据
+    * */
+    public ArrayList<NewsInfo> parser(String dataStr) {
 
-        ArrayList<News> newsList = new ArrayList<News>();
+        ArrayList<NewsInfo> newsList = new ArrayList<NewsInfo>();
         try {
             JSONObject jsonObject = new JSONObject(dataStr);
             JSONArray jsonArray = jsonObject.getJSONArray("data");
@@ -38,16 +43,14 @@ public class ParserNews {
                 String summary = object.getString("summary");
                 String link = object.getString("link");
                 int type = object.getInt("type");
-
-                News news = new News(nid, title, summary, icon, link, type);
-                newsList.add(news);
+                String stamp = object.getString("stamp");
+                NewsInfo newsInfo = new NewsInfo(nid, title, summary, icon, link, type, stamp);
+                NewsDBManager.getNewsDBManager(context).insertNews(newsInfo);
+                newsList.add(newsInfo);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return newsList;
-
-
     }
 }
